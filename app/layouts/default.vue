@@ -16,6 +16,7 @@ import MiniProgram from '@/components/MiniProgram.vue'
 import WordCollectPopover from '@/components/word/WordCollectPopover.vue'
 import UserPickerDialog from '@/components/dialog/UserPickerDialog.vue'
 import { getActiveUser, hasChosenUser, scopedKey } from '@/core/utils/userScope'
+import { migrateIdbToServer } from '@/core/utils/storage'
 
 const USER_META: Record<string, { emoji: string; label: string }> = {
   duoduo: { emoji: '🐰', label: '朵朵' },
@@ -31,6 +32,8 @@ onMounted(() => {
   showUserPicker = !hasChosenUser()
   // 家用版：禁用上游新手引导——未选人(default)阶段也预写跳过标记
   if (!hasChosenUser()) localStorage.setItem(scopedKey('tour-guide'), '1')
+  // 集中式存储：把本地 IndexedDB 未同步的 key 推到服务器（幂等，一次性）
+  migrateIdbToServer()
 })
 
 const router = useRouter()

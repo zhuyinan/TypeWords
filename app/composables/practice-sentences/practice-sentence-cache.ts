@@ -1,4 +1,4 @@
-import { get, set } from 'idb-keyval'
+import { get, set } from '@/core/utils/storage'
 import { scopedKey } from '@/core/utils/userScope'
 import type { SentencePracticeItem, SentencePracticeMode } from './types.ts'
 

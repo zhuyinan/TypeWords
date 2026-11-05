@@ -15,7 +15,7 @@ import {
   LOCAL_FILE_KEY,
   Origin,
 } from '@/core/config/env'
-import { get, set } from 'idb-keyval'
+import { get, set } from '@/core/utils/storage'
 import { useRuntimeStore } from '@/core/stores/runtime'
 import { useExport } from '@/core/hooks/export'
 import Log from '@/components/setting/Log.vue'

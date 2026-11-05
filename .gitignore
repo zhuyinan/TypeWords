@@ -40,3 +40,7 @@ report.html
 public/vscode
 apps/TypeWordsMiniApp
 *.tsbuildinfo
+
+# 词表数据由 fetch-wordlists.sh 从上游拉取，不进 git
+public/dicts/en/word/*
+!public/dicts/en/word/.gitkeep

@@ -1,3 +1,6 @@
+import { getDefaultWord } from '../types/func'
+import type { Word } from '../types/types'
+
 export type ParsedWordEntry = {
   raw: string
   word: string
@@ -63,4 +66,17 @@ export function parseWordList(text: string): ParsedWordEntry[] {
     seen.add(key)
     return { ...base, word, cn, phonetic, valid: true }
   })
+}
+
+export function buildWordsFromParsed(entries: ParsedWordEntry[]): Word[] {
+  return entries
+    .filter(e => e.valid)
+    .map(e =>
+      getDefaultWord({
+        word: e.word,
+        phonetic0: e.phonetic,
+        phonetic1: e.phonetic,
+        trans: [{ pos: '', cn: e.cn }],
+      })
+    )
 }

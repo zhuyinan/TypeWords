@@ -1,5 +1,21 @@
 import { describe, expect, it } from 'vitest'
-import { parseWordList } from '../app/core/utils/importWords'
+import { buildWordsFromParsed, parseWordList } from '../app/core/utils/importWords'
+
+describe('buildWordsFromParsed', () => {
+  it('只取 valid 条目并映射字段', () => {
+    const words = buildWordsFromParsed(parseWordList('apple [ˈæpl] n. 苹果\n苹果\nbanana 香蕉'))
+    expect(words).toHaveLength(2)
+    expect(words[0].word).toBe('apple')
+    expect(words[0].phonetic0).toBe('ˈæpl')
+    expect(words[0].trans).toEqual([{ pos: '', cn: 'n. 苹果' }])
+    expect(words[1].word).toBe('banana')
+  })
+
+  it('每个 Word 有唯一 id', () => {
+    const words = buildWordsFromParsed(parseWordList('a 甲\nb 乙'))
+    expect(words[0].id).not.toBe(words[1].id)
+  })
+})
 
 describe('parseWordList', () => {
   it('解析 tab 分隔', () => {

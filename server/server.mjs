@@ -132,9 +132,12 @@ function serveStatic(res, url) {
 
   const send = (f, code = 200) => {
     const ext = path.extname(f)
+    // 目录类 json 会更新 → 不缓存；词表/静态资源内容不变 → 长缓存
+    const isList = f.startsWith(path.join(STATIC_ROOT, 'list'))
+    const cache = ext === '.html' || isList ? 'no-cache' : 'public, max-age=604800'
     res.writeHead(code, {
       'Content-Type': MIME[ext] || 'application/octet-stream',
-      'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=604800',
+      'Cache-Control': cache,
     })
     fs.createReadStream(f).on('error', () => res.writeHead(404).end()).pipe(res)
   }

@@ -9,7 +9,6 @@
  * - Shepherd Tour 初始化
  */
 import { watchOnce } from '@vueuse/core'
-import CollectNotice from '@/components/dialog/CollectNotice.vue'
 import ConflictNotice2 from '@/components/dialog/ConflictNotice2.vue'
 import { useRoute } from 'vue-router'
 import { useSettingStore } from '@/core/stores/setting.ts'
@@ -31,7 +30,6 @@ void props.dictId
 const route = useRoute()
 const settingStore = useSettingStore()
 
-let showCollectNotice = $ref(false)
 let showConflictNotice2 = $ref(false)
 
 function openConflictNotice2() {
@@ -41,13 +39,6 @@ function openConflictNotice2() {
 defineExpose({
   openConflictNotice2,
 })
-
-// 首次加载时显示提示
-if (!route.query.guide) {
-  setTimeout(() => {
-    showCollectNotice = true
-  }, 10000)
-}
 
 // Tour 引导初始化
 watchOnce(
@@ -72,9 +63,6 @@ watchOnce(
               action() {
                 settingStore.first = false
                 tour.next()
-                setTimeout(() => {
-                  showCollectNotice = true
-                }, 10000)
               },
             },
           ],
@@ -88,6 +76,5 @@ watchOnce(
 </script>
 
 <template>
-  <CollectNotice v-model="showCollectNotice" />
   <ConflictNotice2 v-model="showConflictNotice2" />
 </template>

@@ -37,6 +37,7 @@ import { getDefaultDict } from '@/core/types/func.ts'
 import PracticeSettingDialog from '@/components/word/PracticeSettingDialog.vue'
 import ChangeLastPracticeIndexDialog from '@/components/word/ChangeLastPracticeIndexDialog.vue'
 import { useSettingStore } from '@/core/stores/setting.ts'
+import { getActiveUser } from '@/core/utils/userScope'
 import { useFetch } from '@vueuse/core'
 import {
   APP_NAME,
@@ -306,6 +307,16 @@ function freePractice() {
   startPractice(WordPracticeMode.Free, settingStore.wordPracticeMode !== WordPracticeMode.Free)
 }
 
+// ── 儿童模式（朵朵四选一 / 苗苗完整学习模式）──
+const KID_PRESET: Record<string, { name: string; mode: WordPracticeMode }> = {
+  duoduo: { name: '朵朵', mode: WordPracticeMode.IdentifyOnly },
+  miaomiao: { name: '苗苗', mode: WordPracticeMode.System },
+}
+const activeUser = getActiveUser()
+const isKid = activeUser in KID_PRESET
+const kidName = isKid ? KID_PRESET[activeUser].name : ''
+const kidPresetMode = isKid ? KID_PRESET[activeUser].mode : settingStore.wordPracticeMode
+
 function systemPractice() {
   const currentMode = settingStore.wordPracticeMode
   const isFree = currentMode === WordPracticeMode.Free
@@ -561,6 +572,26 @@ onUnmounted(() => {
 
 <template>
   <BasePage>
+    <!-- 儿童模式横幅：朵朵/苗苗登录后置顶显示 -->
+    <div class="card kid-banner" v-if="isKid">
+      <div class="kid-hi">嗨，{{ kidName }}！今天背单词啦 🎯</div>
+      <div class="kid-sub" v-if="store.sdict.id">
+        当前词书：{{ store.sdict.name }}（{{ store.sdict.length }} 词，每天 {{ store.sdict.perDayStudyNumber }} 个）
+      </div>
+      <div class="kid-sub" v-else>还没有词书，先选一本或导入词表吧</div>
+      <div class="kid-actions">
+        <div
+          class="kid-go"
+          v-if="store.sdict.id"
+          @click="startPractice(isKid ? kidPresetMode : settingStore.wordPracticeMode)"
+        >
+          🚀 开始今天的学习
+        </div>
+        <div class="kid-go" v-else @click="router.push('/dict-list')">📚 先选一本词书</div>
+        <div class="kid-sec" @click="router.push('/dict-list')">📖 我的词书</div>
+      </div>
+    </div>
+
     <div class="my-100 text-4xl font-bold text-red" v-if="isOldHost">
       已启用新域名
       <a class="mr-4" :href="`${Origin}/words?from_old_site=1`">{{ Origin }}</a
@@ -909,6 +940,61 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
+/* ── 儿童模式横幅 ── */
+.kid-banner {
+  margin-bottom: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(255, 214, 102, 0.18), rgba(110, 168, 254, 0.14));
+}
+
+.kid-hi {
+  font-size: 1.75rem;
+  font-weight: bold;
+}
+
+.kid-sub {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.kid-actions {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.kid-go {
+  cursor: pointer;
+  padding: 0.9rem 2.5rem;
+  border-radius: 999px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: white;
+  background: #6ea8fe;
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.kid-sec {
+  cursor: pointer;
+  padding: 0.9rem 1.75rem;
+  border-radius: 999px;
+  font-size: 1.05rem;
+  border: 2px solid var(--color-line);
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
 .stat {
   @apply w-49% box-border flex flex-col items-center justify-center rounded-xl p-2 bg-[var(--bg-history)];
   border: 1px solid gainsboro;

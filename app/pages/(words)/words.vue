@@ -661,7 +661,7 @@ onUnmounted(() => {
         </div>
       </div>
       <div class="flex-1 mt-4 md:mt-0" :class="!store.sdict.id && 'opacity-30 cursor-not-allowed'">
-        <div class="flex justify-between">
+        <div class="flex justify-between flex-wrap gap-y-2 today-task-row">
           <div class="flex items-center gap-2">
             <div class="p-2 center rounded-full bg-white">
               <IconFluentStar20Filled class="text-lg color-amber" />
@@ -992,6 +992,15 @@ onUnmounted(() => {
 
   &:hover {
     transform: scale(1.05);
+  }
+}
+
+.today-task-row {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  > .flex.gap-1.items-center {
+    flex-wrap: wrap;
   }
 }
 

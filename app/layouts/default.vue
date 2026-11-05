@@ -14,6 +14,22 @@ import { useI18n } from 'vue-i18n'
 import { Supabase } from '@/core/utils/supabase.ts'
 import MiniProgram from '@/components/MiniProgram.vue'
 import WordCollectPopover from '@/components/word/WordCollectPopover.vue'
+import UserPickerDialog from '@/components/dialog/UserPickerDialog.vue'
+import { getActiveUser, hasChosenUser } from '@/core/utils/userScope'
+
+const USER_META: Record<string, { emoji: string; label: string }> = {
+  duoduo: { emoji: '🐰', label: '朵朵' },
+  miaomiao: { emoji: '🐯', label: '苗苗' },
+  default: { emoji: '👤', label: '默认' },
+}
+let showUserPicker = $ref(false)
+let currentUser = $ref('default')
+let currentUserMeta = $computed(() => USER_META[currentUser] ?? USER_META.default)
+
+onMounted(() => {
+  currentUser = getActiveUser()
+  showUserPicker = !hasChosenUser()
+})
 
 const router = useRouter()
 const { toggleTheme, getTheme, setTheme } = useTheme()
@@ -109,6 +125,10 @@ function onMouseLeave() {
         <!--        </div>-->
       </div>
       <div class="px-4 pb-2 border-0 border-t-1 border-solid border-[var(--color-line)]">
+        <div class="row" @click="showUserPicker = true">
+          <span class="text-lg leading-none">{{ currentUserMeta.emoji }}</span>
+          <span>{{ currentUserMeta.label }}</span>
+        </div>
         <NuxtLink to="/setting" class="row">
           <IconFluentSettings20Regular />
           <span>{{ $t('setting') }}</span>
@@ -132,6 +152,10 @@ function onMouseLeave() {
           <IconFluentBookLetter20Regular />
           <span>{{ $t('articles') }}</span>
         </div>
+        <div class="nav-item" @click="showUserPicker = true">
+          <span class="text-lg leading-none">{{ currentUserMeta.emoji }}</span>
+          <span>{{ currentUserMeta.label }}</span>
+        </div>
         <div class="nav-item" @click="router.push('/setting')" :class="{ active: route.path === '/setting' }">
           <IconFluentSettings20Regular />
           <span>{{ $t('setting') }}</span>
@@ -145,6 +169,7 @@ function onMouseLeave() {
     </div>
 
     <IeDialog />
+    <UserPickerDialog v-if="showUserPicker" @chosen="u => (currentUser = u)" />
 
     <div class="flex-1 z-1 relative main-content overflow-x-hidden">
       <div

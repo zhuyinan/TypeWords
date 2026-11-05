@@ -30,6 +30,7 @@ import { nextTick } from 'vue'
 import { Toast } from '@/base'
 import { get } from 'idb-keyval'
 import { nanoid } from 'nanoid'
+import { scopedKey } from './userScope'
 import { saveHashSnapshot } from '../composables/useDataSyncPersistence'
 import { withAppBaseURL } from './base-url'
 
@@ -171,7 +172,7 @@ export async function checkAndUpgradeSaveSetting(val: any) {
       let updateLocalData = false
       //移除单独保存的 app version字段，转移到 settingStore的webAppVersion里面
       if (version <= 17) {
-        defaultState.webAppVersion = (await get(APP_VERSION.key)) ?? APP_VERSION.version
+        defaultState.webAppVersion = (await get(scopedKey(APP_VERSION.key))) ?? APP_VERSION.version
         updateLocalData = true
       }
       //3/20晚上10点25推的代码，这个地方出了一个bug，ShortcutKey没导入，导致抛异常后返回了默认值，所有的用户的setting都变成默认值了。
@@ -181,7 +182,7 @@ export async function checkAndUpgradeSaveSetting(val: any) {
       if (version === 19) {
         try {
           const snapshotCutoffTime = new Date('2026-03-20T22:25:00+08:00').getTime()
-          const rawIndex = (await get(BACKUP_INDEX_KEY)) as Array<{ key?: string; createdAt?: number }> | null
+          const rawIndex = (await get(scopedKey(BACKUP_INDEX_KEY))) as Array<{ key?: string; createdAt?: number }> | null
           const index = Array.isArray(rawIndex) ? rawIndex : []
           const targetSnapshot = index
             .filter(item => typeof item?.key === 'string' && Number(item?.createdAt) <= snapshotCutoffTime)

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { checkAndUpgradeSaveSetting, cloneDeep, parseJsonStr } from '../utils'
+import { scopedKey } from '../utils/userScope'
 import { get, set } from 'idb-keyval'
 import { APP_VERSION, DefaultShortcutKeyMap, SAVE_SETTING_KEY } from '../config/env'
 import { IdentifyMethod, type SaveData, WordPracticeMode, WordPracticeType } from '../types'
@@ -175,7 +176,7 @@ export const useSettingStore = defineStore('setting', {
     async init(): Promise<SaveData | null> {
       return new Promise(async resolve => {
         try {
-          let jsonStr = await get(SAVE_SETTING_KEY.key)
+          let jsonStr = await get(scopedKey(SAVE_SETTING_KEY.key))
           if (jsonStr) {
             let result = await parseJsonStr(jsonStr, checkAndUpgradeSaveSetting)
 
@@ -183,7 +184,7 @@ export const useSettingStore = defineStore('setting', {
             const shouldRefreshUpdatedAt = (result.val as any)?.__updateLocalData ?? false
             delete (result.val as any)?.__updateLocalData
             if (shouldRefreshUpdatedAt) {
-              await set(SAVE_SETTING_KEY.key, JSON.stringify(result))
+              await set(scopedKey(SAVE_SETTING_KEY.key), JSON.stringify(result))
             }
             this.setState(result.val)
             resolve(result)

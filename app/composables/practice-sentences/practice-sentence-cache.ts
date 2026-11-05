@@ -1,4 +1,5 @@
 import { get, set } from 'idb-keyval'
+import { scopedKey } from '@/core/utils/userScope'
 import type { SentencePracticeItem, SentencePracticeMode } from './types.ts'
 
 type CacheConfig = { key: string; version: number }
@@ -21,7 +22,7 @@ export interface PracticeSentenceCache {
 type LocalCacheResult<T> = { val: T; updated_at?: string; version: number }
 
 async function getLocalWithMeta<T>(config: CacheConfig): Promise<LocalCacheResult<T> | null> {
-  const raw = await get(config.key)
+  const raw = await get(scopedKey(config.key))
   if (!raw) return null
   if (typeof raw === 'string') {
     try {
@@ -46,7 +47,7 @@ async function setLocal<T>(config: CacheConfig, val: T | null, updated_at: strin
     val,
     updated_at,
   }
-  await set(config.key, JSON.stringify(payload))
+  await set(scopedKey(config.key), JSON.stringify(payload))
 }
 
 export async function getPracticeSentenceCacheLocal(): Promise<PracticeSentenceCache | null> {

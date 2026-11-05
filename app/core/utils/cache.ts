@@ -2,6 +2,7 @@ import type { PracticeData, TaskWords } from '../types'
 import { WordPracticeMode, WordPracticeStage, WordPracticeType } from '../types/enum'
 import type { PracticeState } from '../stores'
 import { get, set } from 'idb-keyval'
+import { scopedKey } from './userScope'
 
 type CacheConfig = { key: string; version: number }
 
@@ -229,13 +230,13 @@ export function checkAndUpgradePracticeWordCache(
  */
 async function migrateFromLocalStorage<T>(config: CacheConfig): Promise<LocalCacheResult<T> | null> {
   try {
-    const raw = localStorage.getItem(config.key)
+    const raw = localStorage.getItem(scopedKey(config.key))
     if (!raw) return null
     const parsed = JSON.parse(raw) as LocalCacheResult<T>
     // 迁移到 idb
-    await set(config.key, raw)
+    await set(scopedKey(config.key), raw)
     // 删除 localStorage 中的老数据
-    localStorage.removeItem(config.key)
+    localStorage.removeItem(scopedKey(config.key))
     console.log(`[cache] migrated ${config.key} from localStorage to idb`)
     return parsed
   } catch {
@@ -245,7 +246,7 @@ async function migrateFromLocalStorage<T>(config: CacheConfig): Promise<LocalCac
 
 /** 从 idb 读取带 meta 的缓存；无数据或解析失败返回 null */
 async function getLocalWithMeta<T>(config: CacheConfig): Promise<LocalCacheResult<T> | null> {
-  const raw = await get(config.key)
+  const raw = await get(scopedKey(config.key))
   if (raw) {
     // 兼容旧版本写入的 JSON 字符串格式
     if (typeof raw === 'string') {
@@ -276,7 +277,7 @@ async function setLocal<T>(config: CacheConfig, val: T | null, updated_at: strin
     val,
     updated_at,
   }
-  await set(config.key, JSON.stringify(payload))
+  await set(scopedKey(config.key), JSON.stringify(payload))
 }
 
 export async function getPracticeWordCacheLocal(): Promise<PracticeWordCacheStored | null> {

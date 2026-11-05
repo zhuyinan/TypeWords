@@ -61,6 +61,7 @@ import {
 import dayjs from 'dayjs'
 import { getActiveCustomFlowId, getUserFlow } from '@/core/composables/practice-words/practice-flow-runtime.ts'
 import { createStudyTask } from '@/core/composables/practice-words/study-task.ts'
+import { scopedKey } from '@/core/utils/userScope'
 
 const store = useBaseStore()
 const settingStore = useSettingStore()
@@ -172,7 +173,7 @@ watch(
         const Shepherd = await loadJsLib('Shepherd', LIB_JS_URL.SHEPHERD)
         const tour = new Shepherd.Tour(TourConfig)
         tour.on('cancel', () => {
-          localStorage.setItem('tour-guide', '1')
+          localStorage.setItem(scopedKey('tour-guide'), '1')
         })
         tour.addStep({
           id: 'step1',
@@ -191,7 +192,7 @@ watch(
             },
           ],
         })
-        const r = localStorage.getItem('tour-guide')
+        const r = localStorage.getItem(scopedKey('tour-guide'))
         if (settingStore.first && !r && !isMobile()) tour.start()
       }, 500)
     }

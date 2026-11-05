@@ -15,6 +15,7 @@ import { useRoute } from 'vue-router'
 import { useSettingStore } from '@/core/stores/setting.ts'
 import { LIB_JS_URL, TourConfig } from '@/core/config/env.ts'
 import { _nextTick, isMobile, loadJsLib, sleep } from '@/core/utils'
+import { scopedKey } from '@/core/utils/userScope'
 
 interface IProps {
   /** 是否已加载完数据，有了 words 之后再初始化 Tour */
@@ -54,12 +55,12 @@ watchOnce(
   ready => {
     if (!ready) return
     _nextTick(async () => {
-      const r = localStorage.getItem('tour-guide')
+      const r = localStorage.getItem(scopedKey('tour-guide'))
       if (settingStore.first && !r && !isMobile()) {
         const Shepherd = await loadJsLib('Shepherd', LIB_JS_URL.SHEPHERD)
         const tour = new Shepherd.Tour(TourConfig)
         tour.on('cancel', () => {
-          localStorage.setItem('tour-guide', '1')
+          localStorage.setItem(scopedKey('tour-guide'), '1')
         })
         tour.addStep({
           id: 'step5',

@@ -1,4 +1,5 @@
 /** Flow 配置的严格校验、存储，以及每个练习实例独享的运行时。 */
+import { scopedKey } from '@/core/utils/userScope'
 import { shallowRef } from 'vue'
 import type { TaskWords, Word } from '@/core/types/types.ts'
 import { WordPracticeMode } from '@/core/types/enum.ts'
@@ -52,7 +53,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function getFlowStorage(): PracticeFlowStorageData {
   try {
-    const raw = localStorage.getItem(FLOW_STORAGE_KEY)
+    const raw = localStorage.getItem(scopedKey(FLOW_STORAGE_KEY))
     if (raw) {
       const parsed = JSON.parse(raw)
       if (parsed && typeof parsed === 'object' && parsed.flows && typeof parsed.flows === 'object') {
@@ -69,7 +70,7 @@ function getFlowStorage(): PracticeFlowStorageData {
 }
 
 function setFlowStorage(data: PracticeFlowStorageData) {
-  localStorage.setItem(FLOW_STORAGE_KEY, JSON.stringify(data))
+  localStorage.setItem(scopedKey(FLOW_STORAGE_KEY), JSON.stringify(data))
 }
 
 function isValidSubStep(value: unknown): value is PracticeLoopSubStep {

@@ -34,6 +34,7 @@ import BackupGateDialog from '@/components/dialog/BackupGateDialog.vue'
 import { createClient } from '@supabase/supabase-js'
 import { useRoute } from 'vue-router'
 import type { BackupData, Snapshot } from '@/core'
+import { scopedKey } from '@/core/utils/userScope'
 
 const Dialog = defineAsyncComponent(() => import('@/base/dialog/Dialog.vue'))
 
@@ -297,7 +298,7 @@ async function importData(e) {
             records.push({ id, file: blob })
           }
         }
-        await set(LOCAL_FILE_KEY, records)
+        await set(scopedKey(LOCAL_FILE_KEY), records)
       }
 
       const str = await dataFile.async('string')
@@ -328,7 +329,7 @@ function openGate(type) {
 }
 
 async function openHistoryDialog() {
-  const raw = (await get(BACKUP_INDEX_KEY)) as HistoryBackupIndexItem[] | undefined
+  const raw = (await get(scopedKey(BACKUP_INDEX_KEY))) as HistoryBackupIndexItem[] | undefined
   const index = Array.isArray(raw)
     ? raw.filter(item => item && typeof item.hash === 'string' && typeof item.key === 'string')
     : []

@@ -27,6 +27,7 @@ import ArticleAudio from './ArticleAudio.vue'
 import { LOCAL_FILE_KEY } from '@/core/config/env.ts'
 import { TranslateEngine } from '@/core/types'
 import { useI18n } from 'vue-i18n'
+import { scopedKey } from '../../core/utils/userScope'
 
 const Dialog = defineAsyncComponent(() => import('@/base/dialog/Dialog.vue'))
 const { t: $t } = useI18n()
@@ -189,7 +190,7 @@ async function handleAudioChange(e: any) {
     file: uploadFile,
   }
   //把文件存到indexDB
-  await update(LOCAL_FILE_KEY, val => {
+  await update(scopedKey(LOCAL_FILE_KEY), val => {
     if (val) val.push(data)
     else val = [data]
     return val

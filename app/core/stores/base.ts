@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { type Dict, getDefaultDict, type SaveData, type Word } from '../types'
 import { _getStudyProgress, checkAndUpgradeSaveDict, isSameDictResource, parseJsonStr } from '../utils'
 import { shallowReactive } from 'vue'
+import { scopedKey } from '../utils/userScope'
 import { get } from 'idb-keyval'
 import { DictId, IS_DEV, SAVE_DICT_KEY } from '../config/env'
 import type { Card } from 'ts-fsrs'
@@ -188,7 +189,7 @@ export const useBaseStore = defineStore('base', {
     async init(): Promise<SaveData | null> {
       return new Promise(async resolve => {
         try {
-          let jsonStr: string = await get(SAVE_DICT_KEY.key)
+          let jsonStr: string = await get(scopedKey(SAVE_DICT_KEY.key))
           if (jsonStr) {
             let result = await parseJsonStr(jsonStr, checkAndUpgradeSaveDict)
             // console.log('data', data)

@@ -4,6 +4,7 @@ import { ref, watch } from 'vue'
 import { get } from 'idb-keyval'
 import { Audio } from '@/base'
 import { ENV, LOCAL_FILE_KEY } from '@/core/config/env.ts'
+import { scopedKey } from '../../core/utils/userScope'
 
 const props = defineProps<{
   article: Article
@@ -52,7 +53,7 @@ watch(
   () => props.article.audioFileId,
   async () => {
     if (!props.article.audioSrc && props.article.audioFileId) {
-      let list = await get(LOCAL_FILE_KEY)
+      let list = await get(scopedKey(LOCAL_FILE_KEY))
       if (list) {
         let rItem = list.find(file => file.id === props.article.audioFileId)
         if (rItem) {

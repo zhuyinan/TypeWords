@@ -13,6 +13,7 @@ import { getDefaultDict } from '@/core/types/func.ts'
 import { useFetch } from '@vueuse/core'
 import { DICT_LIST, LIB_JS_URL, TourConfig } from '@/core/config/env.ts'
 import { useSettingStore } from '@/core/stores/setting.ts'
+import { scopedKey } from '@/core/utils/userScope'
 
 const { nav } = useNav()
 const runtimeStore = useRuntimeStore()
@@ -84,7 +85,7 @@ watch(dict_list, val => {
     const Shepherd = await loadJsLib('Shepherd', LIB_JS_URL.SHEPHERD)
     const tour = new Shepherd.Tour(TourConfig)
     tour.on('cancel', () => {
-      localStorage.setItem('tour-guide', '1')
+      localStorage.setItem(scopedKey('tour-guide'), '1')
     })
     tour.addStep({
       id: 'step2',
@@ -101,7 +102,7 @@ watch(dict_list, val => {
       ],
     })
 
-    const r = localStorage.getItem('tour-guide')
+    const r = localStorage.getItem(scopedKey('tour-guide'))
     if (settingStore.first && !r && !isMobile()) {
       tour.start()
     }

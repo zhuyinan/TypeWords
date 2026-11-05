@@ -31,6 +31,7 @@ import { type BaseState, getDefaultBaseState, getDefaultSettingState, useBaseSto
 import type { BackupData, SaveData, Snapshot } from '../types/types.ts'
 import { SyncDataType, CompareResult, DictType } from '../types/enum'
 import { Supabase } from '../utils/supabase'
+import { scopedKey } from '../utils/userScope'
 import { del, get, set } from 'idb-keyval'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { Toast } from '@/base'
@@ -80,7 +81,8 @@ function getDataVersion(type: SyncDataType): number {
 }
 
 function getPersistKey(type: SyncDataType): string {
-  return type === SyncDataType.dict ? SAVE_DICT_KEY.key : SAVE_SETTING_KEY.key
+  const key = type === SyncDataType.dict ? SAVE_DICT_KEY.key : SAVE_SETTING_KEY.key
+  return scopedKey(key)
 }
 
 function getSyncClient(client?: SupabaseClient | null): SupabaseClient | null {
@@ -308,7 +310,7 @@ export async function ensureHashGuardBeforeInit() {
 }
 
 export async function saveHashSnapshot(currentHash: string, previousHash: string | null): Promise<boolean> {
-  const backupKey = `${BACKUP_KEY}${currentHash}`
+  const backupKey = scopedKey(`${BACKUP_KEY}${currentHash}`)
   const createdAt = Date.now()
 
   const snapshot: Snapshot = {
@@ -318,10 +320,10 @@ export async function saveHashSnapshot(currentHash: string, previousHash: string
       createdAt,
     },
     data: {
-      dict: await get(SAVE_DICT_KEY.key),
-      setting: await get(SAVE_SETTING_KEY.key),
-      [PRACTICE_WORD_CACHE.key]: (await get(PRACTICE_WORD_CACHE.key)) ?? null,
-      [PRACTICE_ARTICLE_CACHE.key]: (await get(PRACTICE_ARTICLE_CACHE.key)) ?? null,
+      dict: await get(scopedKey(SAVE_DICT_KEY.key)),
+      setting: await get(scopedKey(SAVE_SETTING_KEY.key)),
+      [PRACTICE_WORD_CACHE.key]: (await get(scopedKey(PRACTICE_WORD_CACHE.key))) ?? null,
+      [PRACTICE_ARTICLE_CACHE.key]: (await get(scopedKey(PRACTICE_ARTICLE_CACHE.key))) ?? null,
     },
   }
   if (!snapshot.data.dict) {
@@ -329,7 +331,7 @@ export async function saveHashSnapshot(currentHash: string, previousHash: string
   }
   await set(backupKey, snapshot)
 
-  const rawIndex = (await get(BACKUP_INDEX_KEY)) as HashBackupIndexItem[] | undefined
+  const rawIndex = (await get(scopedKey(BACKUP_INDEX_KEY))) as HashBackupIndexItem[] | undefined
   const index = Array.isArray(rawIndex)
     ? rawIndex.filter(item => item && typeof item.hash === 'string' && typeof item.key === 'string')
     : []
@@ -348,7 +350,7 @@ export async function saveHashSnapshot(currentHash: string, previousHash: string
       await del(item.key)
     }
   }
-  await set(BACKUP_INDEX_KEY, index)
+  await set(scopedKey(BACKUP_INDEX_KEY), index)
   return true
 }
 
@@ -553,13 +555,13 @@ export function useDataSyncPersistence() {
 
     if (blockReason) {
       const result: Array<{ id: string; file: Blob }> = []
-      const fileList = (await get(LOCAL_FILE_KEY)) as Array<{ id: string; file: Blob }> | undefined
+      const fileList = (await get(scopedKey(LOCAL_FILE_KEY))) as Array<{ id: string; file: Blob }> | undefined
       const files = fileList ?? []
       audioFileIdList.forEach(id => {
         const item = files.find(file => file.id === id)
         item && result.push(item)
       })
-      await set(LOCAL_FILE_KEY, result)
+      await set(scopedKey(LOCAL_FILE_KEY), result)
       if (Supabase.check()) {
         Supabase.setStatus('error', blockReason)
       }

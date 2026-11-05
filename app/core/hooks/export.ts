@@ -16,6 +16,7 @@ import { useBaseStore } from '../stores/base'
 import { useSettingStore } from '../stores/setting'
 import { ref } from 'vue'
 import { PRACTICE_ARTICLE_CACHE, PRACTICE_WORD_CACHE } from '../utils/cache'
+import { scopedKey } from '../utils/userScope'
 import { usePracticeArticlePersistence, usePracticeWordPersistence } from '../composables/usePracticePersistence.ts'
 import type { BackupData } from '../types'
 
@@ -86,7 +87,7 @@ export function useExport() {
     const zip = new JSZip()
     zip.file('data.json', JSON.stringify(await getExportedData()))
     const mp3 = zip.folder('mp3')
-    const allRecords = await get(LOCAL_FILE_KEY)
+    const allRecords = await get(scopedKey(LOCAL_FILE_KEY))
     for (const rec of allRecords ?? []) {
       mp3.file(rec.id + '.mp3', rec.file)
     }

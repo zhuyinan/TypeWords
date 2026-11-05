@@ -43,6 +43,7 @@ import saveAs from 'file-saver'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
+import { scopedKey } from '@/core/utils/userScope'
 
 const runtimeStore = useRuntimeStore()
 const wordPersistence = usePracticeWordPersistence()
@@ -458,7 +459,7 @@ watch(
       const Shepherd = await loadJsLib('Shepherd', LIB_JS_URL.SHEPHERD)
       const tour = new Shepherd.Tour(TourConfig)
       tour.on('cancel', () => {
-        localStorage.setItem('tour-guide', '1')
+        localStorage.setItem(scopedKey('tour-guide'), '1')
       })
       tour.addStep({
         id: 'step3',
@@ -500,7 +501,7 @@ watch(
         ],
       })
 
-      const r = localStorage.getItem('tour-guide')
+      const r = localStorage.getItem(scopedKey('tour-guide'))
       if (settingStore.first && !r && !isMobile()) {
         tour.start()
       }

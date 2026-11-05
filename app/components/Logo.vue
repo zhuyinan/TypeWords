@@ -5,8 +5,8 @@ import { withAppBaseURL } from '@/core/utils/base-url'
 
 const settingStore = useSettingStore()
 const router = useRouter()
-const darkLogoSrc = withAppBaseURL('/imgs/logo/logo-text-black.png')
-const lightLogoSrc = withAppBaseURL('/imgs/logo/logo-text-white.png')
+const darkLogoSrc = withAppBaseURL('/imgs/logo/logo-text-black-v2.png')
+const lightLogoSrc = withAppBaseURL('/imgs/logo/logo-text-white-v2.png')
 
 function goHome() {
   router.push('/')

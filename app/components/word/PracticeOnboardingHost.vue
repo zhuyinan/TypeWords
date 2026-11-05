@@ -4,7 +4,6 @@
  *
  * 从 [id].vue 模板提取，负责：
  * - ConflictNotice（首次输入法冲突提示）
- * - CollectNotice（收藏引导弹窗）
  * - ConflictNotice2（无法输入？弹窗）
  * - Shepherd Tour 初始化
  */

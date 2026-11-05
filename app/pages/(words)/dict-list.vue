@@ -4,6 +4,7 @@ import { BackIcon, BaseButton, BaseIcon, BaseInput, BasePage } from '@/base'
 import type { DictResource } from '@/core/types/types.ts'
 import { useRuntimeStore } from '@/core/stores/runtime.ts'
 import Empty from '@/components/Empty.vue'
+import WordImportDialog from '@/components/dialog/WordImportDialog.vue'
 import DictList from '@/components/list/DictList.vue'
 import DictGroup from '@/components/list/DictGroup.vue'
 import { useBaseStore } from '@/core/stores/base.ts'
@@ -46,6 +47,8 @@ function groupByDictTags(dictList: DictResource[]) {
 
 const { data: dict_list, isFetching } = useFetch(resourceWrap(DICT_LIST.WORD.ALL)).json()
 
+const myDicts = computed<any[]>(() => store.word.bookList.filter((d: any) => d.custom))
+
 const groupedByCategoryAndTag = $computed(() => {
   let data = []
   if (!dict_list.value) return data
@@ -59,6 +62,7 @@ const groupedByCategoryAndTag = $computed(() => {
 })
 
 let showSearchInput = $ref(false)
+let showImportDialog = $ref(false)
 let searchKey = $ref('')
 
 const searchList = computed<any[]>(() => {
@@ -121,10 +125,15 @@ watch(dict_list, val => {
         </div>
         <div class="py-1 flex flex-1 justify-end" v-else>
           <span class="page-title absolute w-full center">{{ $t('dict_list') }}</span>
+          <BaseButton type="primary" size="small" class="z-1 mr-1" @click="showImportDialog = true">导入词表</BaseButton>
           <BaseIcon :title="$t('search')" @click="showSearchInput = true" class="z-1" icon="fluent:search-24-regular">
             <IconFluentSearch24Regular />
           </BaseIcon>
         </div>
+      </div>
+      <div class="mt-4" v-if="myDicts.length">
+        <div class="text-lg font-bold mb-2">我的词书</div>
+        <DictList @selectDict="selectDict" :list="myDicts" quantifier="词" :select-id="store.sdict.id" />
       </div>
       <div class="mt-4" v-if="searchKey">
         <DictList
@@ -147,6 +156,11 @@ watch(dict_list, val => {
         />
       </div>
     </div>
+    <WordImportDialog
+      v-if="showImportDialog"
+      @close="showImportDialog = false"
+      @imported="showImportDialog = false"
+    />
   </BasePage>
 </template>
 

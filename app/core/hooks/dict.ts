@@ -6,6 +6,7 @@ import { _getDictDataByUrl, cloneDeep, isDictIdMatch, resourceWrap, shuffle } fr
 import { computed, onMounted, watch } from 'vue'
 import { DICT_LIST, DictId } from '../config/env.ts'
 import { useRuntimeStore } from '../stores/runtime.ts'
+import { getActiveUser } from '../utils/userScope'
 import { useRoute, useRouter } from 'vue-router'
 import dayjs from 'dayjs'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
@@ -94,6 +95,8 @@ export function useWordOptions() {
       custom: true,
     })
     data.type = DictType.word
+    const PER_USER_DAILY: Record<string, number> = { duoduo: 5, miaomiao: 10 }
+    data.perDayStudyNumber = PER_USER_DAILY[getActiveUser()] ?? data.perDayStudyNumber
     store.word.bookList.push(cloneDeep(data))
     return { ok: true, dict: data }
   }

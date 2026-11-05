@@ -19,7 +19,6 @@ import { get, set } from '@/core/utils/storage'
 import { useRuntimeStore } from '@/core/stores/runtime'
 import { useExport } from '@/core/hooks/export'
 import Log from '@/components/setting/Log.vue'
-import About from '@/components/About.vue'
 import CommonSetting from '@/components/setting/CommonSetting.vue'
 import FsrsSetting from '@/components/setting/FsrsSetting.vue'
 import ArticleSetting from '@/components/setting/ArticleSetting.vue'
@@ -614,10 +613,6 @@ function disable360() {
               <span>{{ $t('update_log') }}</span>
               <!--              <div class="red-point" v-if="runtimeStore.isNew"></div>-->
             </div>
-            <div class="tab" :class="tabIndex === 9 && 'active'" @click="tabIndex = 9">
-              <IconFluentPerson20Regular />
-              <span>{{ $t('about') }}</span>
-            </div>
           </div>
         </div>
         <div class="col-line"></div>
@@ -764,11 +759,6 @@ function disable360() {
 
           <!--          日志-->
           <Log v-if="tabIndex === 8" />
-
-          <div v-if="tabIndex === 9" class="center flex-col">
-            <About />
-            <div class="text-md color-gray mt-10">Build {{ gitLastCommitHash }} {{ gitLastCommitTime }}</div>
-          </div>
         </div>
       </div>
     </div>

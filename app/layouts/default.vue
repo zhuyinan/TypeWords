@@ -112,10 +112,6 @@ function onMouseLeave() {
           <IconFluentBookLetter20Regular />
           <span>{{ $t('articles') }}</span>
         </NuxtLink>
-        <NuxtLink to="/feedback" class="row">
-          <IconFluentCommentEdit20Regular />
-          <span>{{ $t('feedback') }}</span>
-        </NuxtLink>
         <NuxtLink to="/doc" class="row">
           <IconFluentDocument20Regular />
           <span>{{ $t('document') }}</span>

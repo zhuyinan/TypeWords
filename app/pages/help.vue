@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { BasePage, Collapse } from '@/base'
-import WeChat from '@/components/channel-icons/WeChat.vue'
 import { APP_NAME } from '@/core/config/env.ts'
 import ConflictNoticeText from '@/components/dialog/ConflictNoticeText.vue'
 
@@ -67,11 +66,7 @@ useSeoMeta({
 
           <div class="line"></div>
 
-          <Collapse :q="$t('qa5_a')" :a="[$t('qa5_q1'), $t('qa5_q2'), $t('qa5_q3'), $t('qa5_q4')]"> </Collapse>
-
-          <div class="line"></div>
-
-          <Collapse :q="$t('qa6_a')" :a="$t('qa5_q4')"> </Collapse>
+          <Collapse :q="$t('qa5_a')" :a="[$t('qa5_q1'), $t('qa5_q2'), $t('qa5_q3')]"> </Collapse>
 
           <div class="line"></div>
 
@@ -84,19 +79,6 @@ useSeoMeta({
           <div class="line"></div>
 
           <Collapse :q="$t('qa9_a')" :a="$t('qa9_q')"> </Collapse>
-
-          <div class="line"></div>
-
-          <Collapse :q="$t('qa12_a')" :a="$t('qa12_q')"> </Collapse>
-
-          <div class="line"></div>
-
-          <Collapse :q="$t('qa13_a')" :a="[$t('qa13_q1'), $t('qa13_q2'), $t('qa13_q3'), $t('qa13_q4')]">
-            <div class="flex items-center">
-              {{ $t('wechat_group') }}：
-              <WeChat />
-            </div>
-          </Collapse>
         </div>
       </div>
     </div>

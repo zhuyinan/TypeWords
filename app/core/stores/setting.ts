@@ -124,7 +124,7 @@ export const getDefaultSettingState = (): SettingState => ({
   sideExpand: true,
   theme: 'auto',
   shortcutKeyMap: cloneDeep(DefaultShortcutKeyMap),
-  first: true,
+  first: false,
   firstTime: Date.now(),
   webAppVersion: APP_VERSION.version,
   load: false,

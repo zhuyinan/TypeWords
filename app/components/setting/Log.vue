@@ -94,7 +94,7 @@ let logList = [
   },
   {
     date: '2026/04/26',
-    content: '支持带词频的词典 https://github.com/zyronon/TypeWords/pull/257',
+    content: '支持带词频的词典',
   },
   {
     date: '2026/04/23',

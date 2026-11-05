@@ -191,7 +191,6 @@ const encouragementText = $computed(() => {
                 </div>
               </div>
             </div>
-            <ChannelIcons />
           </div>
           <!-- Action Buttons -->
           <div class="summary-actions flex justify-center flex-wrap">

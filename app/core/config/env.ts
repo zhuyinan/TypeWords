@@ -2,12 +2,11 @@ import { offset } from '@floating-ui/dom'
 //这里合并导入，打包会报错
 import { ShortcutKey, WordPracticeMode, WordPracticeStage } from '../types/enum.ts'
 
-export const GITHUB = 'https://github.com/zyronon/TypeWords'
 export const Host = 'typewords.cc'
 export const Old_Host = '2study.top'
 export const EMAIL = 'zyronon@163.com'
 export const Origin = `https://${Host}`
-export const APP_NAME = 'Type Words'
+export const APP_NAME = 'WordStar'
 export const IS_DEV = import.meta.env.MODE === 'development'
 
 const common = {

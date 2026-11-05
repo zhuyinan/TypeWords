@@ -15,7 +15,7 @@ import { Supabase } from '@/core/utils/supabase.ts'
 import MiniProgram from '@/components/MiniProgram.vue'
 import WordCollectPopover from '@/components/word/WordCollectPopover.vue'
 import UserPickerDialog from '@/components/dialog/UserPickerDialog.vue'
-import { getActiveUser, hasChosenUser } from '@/core/utils/userScope'
+import { getActiveUser, hasChosenUser, scopedKey } from '@/core/utils/userScope'
 
 const USER_META: Record<string, { emoji: string; label: string }> = {
   duoduo: { emoji: '🐰', label: '朵朵' },
@@ -29,6 +29,8 @@ let currentUserMeta = $computed(() => USER_META[currentUser] ?? USER_META.defaul
 onMounted(() => {
   currentUser = getActiveUser()
   showUserPicker = !hasChosenUser()
+  // 家用版：禁用上游新手引导——未选人(default)阶段也预写跳过标记
+  if (!hasChosenUser()) localStorage.setItem(scopedKey('tour-guide'), '1')
 })
 
 const router = useRouter()

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { setActiveUser } from '@/core/utils/userScope'
+import { scopedKey, setActiveUser } from '@/core/utils/userScope'
 
 const emit = defineEmits<{ chosen: [name: string] }>()
 
@@ -10,6 +10,8 @@ const users = [
 
 function pick(id: string) {
   setActiveUser(id)
+  // 家用版：跳过上游新手引导（所有页面共用此标记）
+  localStorage.setItem(scopedKey('tour-guide'), '1')
   emit('chosen', id)
   location.reload()
 }
@@ -65,6 +67,7 @@ function pick(id: string) {
   border-radius: 1.5rem;
   padding: 2rem 0;
   background: transparent;
+  color: inherit;
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
